@@ -362,6 +362,18 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     gs.addColorStop(0, "rgba(18,17,16,0.6)"); gs.addColorStop(0.08, "rgba(18,17,16,0)");
     gs.addColorStop(0.92, "rgba(18,17,16,0)"); gs.addColorStop(1, "rgba(18,17,16,0.6)");
     ctx.fillStyle = gs; ctx.fillRect(0, 0, w, h);
+    /* 無断使用対策の透かし：写真全体に「404Lab」を斜めに敷き詰める（どこを切り取っても残るように） */
+    ctx.save();
+    ctx.font = "300 26px \"Helvetica Neue\", \"Segoe UI\", Arial, sans-serif";
+    ctx.fillStyle = "rgba(242,237,230,0.34)";
+    ctx.translate(600, 200);
+    ctx.rotate(-0.26);
+    for (var wy = -260; wy <= 260; wy += 62) {
+      for (var wx = -760; wx <= 760; wx += 190) {
+        ctx.fillText("404Lab", wx + ((wy / 62) % 2 ? 95 : 0), wy);
+      }
+    }
+    ctx.restore();
     /* ロープの上の空きにタイトル文字 */
     drawTitle("404Lab   COLOR   SIMULATOR", 600, 56);
     root.querySelector(".cs-now-rope").textContent = state.size + "mm " + r.n;
