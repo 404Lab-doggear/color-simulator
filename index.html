@@ -31,6 +31,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     <button type="button" data-size="8">8mm</button>
   </div>
   <div class="cs-stage"><canvas class="cs-cv" width="1200" height="340"></canvas></div>
+  <p class="cs-copy">※掲載画像の無断転載・無断使用を禁止します。© 404Lab</p>
   <p class="cs-now"><span class="cs-now-rope"></span><span class="cs-x">×</span><span class="cs-now-acc"></span><span class="cs-x">×</span><span class="cs-now-metal"></span></p>
 
   <p class="cs-label">ROPE<span>ロープカラー</span></p>
@@ -42,7 +43,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   <p class="cs-label">HARDWARE<span>金具カラー</span></p>
   <div class="cs-sw cs-sw-metal"></div>
 
-  <p class="cs-note">※実物の写真の色を置き換えたイメージです（写真は10mm）。画面の表示環境により実際の色と異なって見える場合があります。<br>※ご注文時は、商品オプションで同じカラーをお選びください。<br>※金具のGoldは変更オプション（追加料金）です。</p>
+  <p class="cs-note">※実物の写真の色を置き換えたイメージです（写真は10mm）。画面の表示環境により実際の色と異なって見える場合があります。<br>※ご注文時は、商品オプションで同じカラーをお選びください。<br>※金具のGoldは変更オプション（追加料金）です。<br>※掲載画像の無断転載・無断使用を禁止します。© 404Lab</p>
 </div>
 
 <style>
@@ -58,6 +59,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 #lab404cs .cs-tabs button.on{border-color:#c9a86a;color:#c9a86a}
 #lab404cs .cs-stage{overflow:hidden;background:#121110}
 #lab404cs .cs-cv{display:block;width:100%;height:auto}
+#lab404cs .cs-copy{text-align:right;font-size:9px;letter-spacing:.04em;color:#6f6961;margin:6px 2px 0}
 #lab404cs .cs-now{text-align:center;font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:13px;font-weight:300;letter-spacing:.14em;margin:16px 0 28px;line-height:1.7;color:#f2ede6}
 #lab404cs .cs-x{margin:0 10px;color:#c9a86a}
 #lab404cs .cs-label{font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:11px;letter-spacing:.32em;font-weight:400;color:#c9a86a;margin:0 0 12px}
@@ -374,6 +376,13 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
       }
     }
     ctx.restore();
+    /* 著作権表示（写真の右下） */
+    ctx.save();
+    ctx.font = "300 18px \"Helvetica Neue\", \"Segoe UI\", Arial, sans-serif";
+    ctx.fillStyle = "rgba(242,237,230,0.6)";
+    ctx.textAlign = "right";
+    ctx.fillText("© 404Lab", 1176, 326);
+    ctx.restore();
     /* ロープの上の空きにタイトル文字 */
     drawTitle("404Lab   COLOR   SIMULATOR", 600, 56);
     root.querySelector(".cs-now-rope").textContent = state.size + "mm " + r.n;
@@ -462,6 +471,6 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   <a class="pg-shop" href="https://404lab.base.shop/">ショップで注文する</a>
   <a class="pg-ig" href="https://www.instagram.com/404lab.doggear/">Instagram</a>
 </div>
-<p class="pg-foot">© 404Lab</p>
+<p class="pg-foot">© 2026 404Lab All Rights Reserved.</p>
 </body>
 </html>
