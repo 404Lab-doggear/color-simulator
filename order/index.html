@@ -69,6 +69,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     <p class="od-total"></p>
     <button type="button" class="od-send">内容をコピーしてDMを開く</button>
     <p class="od-done" aria-live="polite"></p>
+    <a class="od-ig" href="https://ig.me/m/404lab.doggear" target="_blank" rel="noopener" hidden>Instagramのメッセージを開く</a>
     <p class="od-hint od-c">ボタンを押すと注文内容がコピーされ、404LabのInstagramのメッセージ画面が開きます。<br>メッセージ欄に<strong>貼り付けて送信</strong>してください。この時点ではまだご注文は確定しません。</p>
   </div>
 
@@ -136,6 +137,8 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 #lab404cs .od-send:disabled{background:#3a3632;color:#6f6961;cursor:default}
 #lab404cs .od-done{font-size:12px;color:#c9a86a;text-align:center;margin:12px 0 4px;min-height:1px}
 #lab404cs .od-sum .od-hint{margin:8px 0 0}
+#lab404cs .od-ig{display:block;text-align:center;border:1px solid #c9a86a;color:#c9a86a;border-radius:999px;padding:12px 10px;margin:4px 0 6px;font-size:13px;letter-spacing:.1em;text-decoration:none}
+#lab404cs .od-ig[hidden]{display:none}
 @media (max-width:480px){#lab404cs .od-opts{grid-template-columns:repeat(3,1fr)}}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Bebas+Neue&family=Playfair+Display:wght@700&family=Roboto+Slab:wght@600&family=Courier+Prime:wght@700&family=Pacifico&family=Dancing+Script:wght@700&family=Great+Vibes&family=Lobster&family=Noto+Sans+JP:wght@700&family=Noto+Serif+JP:wght@700&family=M+PLUS+Rounded+1c:wght@700&family=Zen+Maru+Gothic:wght@700&family=Yuji+Syuku&family=Kaisei+Decol:wght@700&family=Dela+Gothic+One&display=swap">
@@ -693,16 +696,21 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     send.textContent = send.disabled ? (ready ? "書体を選んでください" : "長さを入れてください") : "内容をコピーしてDMを開く";
   }
 
+  /* その場ですぐコピーする方法（Androidは画面がInstagramに切り替わると後からのコピーが失敗するため、先にこれで確実にコピーする） */
+  function copyNow(text) {
+    var t = document.createElement("textarea");
+    t.value = text; t.setAttribute("readonly", "");
+    t.style.position = "fixed"; t.style.top = "0"; t.style.left = "0"; t.style.opacity = "0"; t.style.fontSize = "16px";
+    document.body.appendChild(t);
+    t.focus(); t.select(); t.setSelectionRange(0, text.length);
+    var r = false; try { r = document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(t);
+    return r;
+  }
   function copy(text) {
+    if (copyNow(text)) return Promise.resolve();
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-    return new Promise(function (ok, ng) {
-      var t = document.createElement("textarea");
-      t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
-      document.body.appendChild(t); t.select();
-      var r = false; try { r = document.execCommand("copy"); } catch (e) {}
-      document.body.removeChild(t);
-      r ? ok() : ng();
-    });
+    return Promise.reject();
   }
   function selectSummary() {
     var r = document.createRange(); r.selectNodeContents($(".od-text"));
@@ -719,14 +727,16 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   $(".od-memo").addEventListener("input", update);
   $(".od-sample").addEventListener("input", renderFonts);
   $(".od-send").addEventListener("click", function () {
-    var done = $(".od-done");
-    var w = window.open(DM_URL, "_blank");
-    var tail = w ? "" : "（Instagramが開かないときは @404lab.doggear にメッセージしてください）";
+    var done = $(".od-done"), ig = $(".od-ig");
+    ig.hidden = false;
+    /* コピーが終わってからInstagramを開く */
     copy(lastText).then(function () {
-      done.textContent = "コピーしました。Instagramのメッセージ欄に貼り付けて送信してください。" + tail;
+      done.textContent = "コピーしました。Instagramのメッセージ欄に貼り付けて送信してください。";
+      var w = window.open(DM_URL, "_blank");
+      if (!w) done.textContent += "（自動で開かないときは下のボタンから開いてください）";
     }, function () {
       selectSummary();
-      done.textContent = "自動でコピーできませんでした。上の注文内容を長押し（右クリック）でコピーしてください。" + tail;
+      done.textContent = "自動でコピーできませんでした。上の注文内容を長押しでコピーしてから、下のボタンでInstagramを開いてください。";
     });
   });
 
