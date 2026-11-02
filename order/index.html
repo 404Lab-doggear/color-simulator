@@ -564,7 +564,10 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     { n: "丸型 25mm", k: "c25" },
     { n: "丸型 30mm", k: "c30" },
     { n: "ハート型", k: "heart" },
-    { n: "ヘキサゴン型", k: "hex" }
+    { n: "ヘキサゴン型", k: "hex" },
+    { n: "星型", k: "star" },
+    { n: "月型", k: "moon" },
+    { n: "ひし形", k: "diamond" }
   ];
   /* 刻印の書体（刻印フォント見本 No.01〜16 と同じ） */
   var FONTS = [
@@ -623,13 +626,20 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     var g = gold ? ["#7a5a22", "#f6e3a6", "#b88f3e"] : ["#6f6f6f", "#f4f4f4", "#9a9a9a"];
     var id = "odg" + k + (gold ? "g" : "s");
     var defs = '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + g[1] + '"/><stop offset=".55" stop-color="' + g[2] + '"/><stop offset="1" stop-color="' + g[0] + '"/></linearGradient></defs>';
-    var f = 'fill="url(#' + id + ')"', body, hy;
+    var f = 'fill="url(#' + id + ')"', body, hy, hx = 25;
     if (k === "c20") { body = '<circle cx="25" cy="26" r="13.3" ' + f + '/>'; hy = 14.7; }
     else if (k === "c25") { body = '<circle cx="25" cy="26" r="16.7" ' + f + '/>'; hy = 11.3; }
     else if (k === "c30") { body = '<circle cx="25" cy="26" r="20" ' + f + '/>'; hy = 8; }
     else if (k === "heart") { body = '<path d="M25 44 C12 34 5 27 5 18.5 C5 11.5 10 7 16 7 C20 7 23 9 25 12.5 C27 9 30 7 34 7 C40 7 45 11.5 45 18.5 C45 27 38 34 25 44Z" ' + f + '/>'; hy = 15.5; }
+    else if (k === "star") { body = '<polygon points="25,4 30.3,19.7 46.9,19.9 33.6,29.8 38.5,45.6 25,36 11.5,45.6 16.4,29.8 3.1,19.9 19.7,19.7" ' + f + '/>'; hy = 18; }
+    else if (k === "moon") {
+      // 三日月：外の円から右上にずらした円を切り抜く
+      defs += '<defs><mask id="' + id + 'm"><rect width="50" height="50" fill="#fff"/><circle cx="33.4" cy="21.8" r="16.4" fill="#000"/></mask></defs>';
+      body = '<circle cx="25" cy="26" r="20" mask="url(#' + id + 'm)" ' + f + '/>'; hx = 14; hy = 15;
+    }
+    else if (k === "diamond") { body = '<polygon points="25,4 46,25 25,46 4,25" ' + f + '/>'; hy = 11; }   // 正方形を45度回した形
     else { body = '<polygon points="25,5 43,15.5 43,36.5 25,47 7,36.5 7,15.5" ' + f + '/>'; hy = 9.5; }
-    return '<svg viewBox="0 0 50 50" aria-hidden="true">' + defs + body + '<circle cx="25" cy="' + hy + '" r="1.6" fill="#121110"/></svg>';
+    return '<svg viewBox="0 0 50 50" aria-hidden="true">' + defs + body + '<circle cx="' + hx + '" cy="' + hy + '" r="1.6" fill="#121110"/></svg>';
   }
   function renderShapes() {
     var box = $(".od-shape"), gold = st.metal === "GOLD";
