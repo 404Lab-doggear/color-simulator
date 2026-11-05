@@ -64,6 +64,8 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 #lab404cs .cs-label{font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:11px;letter-spacing:.32em;font-weight:400;color:#c9a86a;margin:0 0 12px}
 #lab404cs .cs-label span{font-family:"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;letter-spacing:.05em;font-weight:300;color:#8d867d;margin-left:10px}
 #lab404cs .cs-sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:14px 6px;margin-bottom:28px}
+#lab404cs .cs-grp{grid-column:1/-1;margin:6px 0 -4px;font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:10px;letter-spacing:.28em;color:#c9a86a;opacity:.85}
+#lab404cs .cs-grp span{font-family:"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;letter-spacing:.05em;font-weight:300;color:#8d867d;margin-left:10px}
 #lab404cs .cs-sw button{appearance:none;border:0;background:transparent;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:inherit;color:#8d867d}
 #lab404cs .cs-dot{width:40px;height:40px;border-radius:50%;border:3px solid #121110;box-shadow:0 0 0 1px #3a3632;background-size:cover;background-position:center;opacity:.72;transition:opacity .2s}
 #lab404cs .cs-sw button:hover .cs-dot{opacity:1}
@@ -122,64 +124,65 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   };
   /* 番号・名前はアクセントコードカラー見本(01〜23)と同じ */
   var ACCENTS = [
-    { n: "01 VIVA LA VINO", c: "#993b48", orig: true },
-    { n: "02 SILVER GRAY", c: "#d0d2ce" },
-    { n: "03 NAVY", c: "#212d5f" },
-    { n: "04 METALLIC KELLY GREEN", c: "#197841" },
-    { n: "05 RED", c: "#d10e18" },
-    { n: "06 BLACK", c: "#141414" },
-    { n: "07 GOLD", c: "#a87e37" },
-    { n: "08 WHITE", c: "#f1f1ee" },
-    { n: "09 SILVER GREY", c: "#9c9ca1" },
-    { n: "10 TAN", c: "#9f8259" },
-    { n: "11 FUCHSIA", c: "#e12e6b" },
-    { n: "12 COBALT BLUE", c: "#386cc8" },
-    { n: "13 COYOTE", c: "#7e6746" },
-    { n: "14 PURPLE", c: "#58279d" },
-    { n: "15 TEAL", c: "#26b5a4" },
-    { n: "16 OD GREEN", c: "#515a35" },
-    { n: "17 CHARCOAL GREY", c: "#46464e" },
-    { n: "18 MAROON", c: "#591421" },
-    { n: "19 HUNTER GREEN", c: "#173628" },
-    { n: "20 CHOCOLATE BROWN", c: "#4a2d21" },
+    { n: "01 VIVA LA VINO", c: "#993b48", orig: true, ltd: true },
+    { n: "02 SILVER GRAY", c: "#d0d2ce", ltd: true },
+    { n: "03 NAVY", c: "#212d5f", ltd: true },
+    { n: "04 METALLIC KELLY GREEN", c: "#197841", ltd: true },
+    { n: "05 RED", c: "#d10e18", ltd: true },
+    { n: "06 BLACK", c: "#141414", ltd: true },
+    { n: "07 GOLD", c: "#a87e37", ltd: true },
+    { n: "08 WHITE", c: "#f1f1ee", ltd: true },
+    { n: "09 SILVER GREY", c: "#9c9ca1", ltd: true },
+    { n: "10 TAN", c: "#9f8259", ltd: true },
+    { n: "11 FUCHSIA", c: "#e12e6b", ltd: true },
+    { n: "12 COBALT BLUE", c: "#386cc8", ltd: true },
+    { n: "13 COYOTE", c: "#7e6746", ltd: true },
+    { n: "14 PURPLE", c: "#58279d", ltd: true },
+    { n: "15 TEAL", c: "#26b5a4", ltd: true },
+    { n: "16 OD GREEN", c: "#515a35", ltd: true },
+    { n: "17 CHARCOAL GREY", c: "#46464e", ltd: true },
+    { n: "18 MAROON", c: "#591421", ltd: true },
+    { n: "19 HUNTER GREEN", c: "#173628", ltd: true },
+    { n: "20 CHOCOLATE BROWN", c: "#4a2d21", ltd: true },
     { n: "21 GOLDEN COPPER GLAMOUR", c: "#e99755" },
-    { n: "22 YELLOW", c: "#ffea33" },
-    { n: "23 NEON YELLOW", c: "#e5f639" },
+    { n: "22 YELLOW", c: "#ffea33", ltd: true },
+    { n: "23 NEON YELLOW", c: "#e5f639", ltd: true },
     { n: "24 CHILI RED", c: "#cf2d24" },
     { n: "25 PASSION PINK", c: "#e4418e" },
-    { n: "26 HOLY GUACAMOLE", c: "#b0b872" },
-    { n: "27 GOLD RUSH", c: "#eba91e" },
-    { n: "28 DEEP PURPLE", c: "#6f3e6f" },
-    { n: "29 SMOKE GREY", c: "#a6a39e" },
-    { n: "30 LAPIS BLUE", c: "#257493" },
-    { n: "31 MOCCA", c: "#ceb08f" },
-    { n: "32 ARMY GREEN", c: "#5a5930" },
-    { n: "33 GREECE BLUE", c: "#03729e" },
-    { n: "34 PEARL ROSÉ", c: "#dcbdb3" },
-    { n: "35 CHOCOLATE BROWN", c: "#623424" },
-    { n: "36 ROYAL ORANGE", c: "#fa922c" },
-    { n: "37 MOSS", c: "#9d9852" },
-    { n: "38 HAZELNUT BROWN", c: "#74503b" },
-    { n: "39 TURQUOISE", c: "#37bfc8" },
-    { n: "40 CERULEAN BLUE", c: "#03a3bf" },
-    { n: "41 BUBBLEGUM PINK", c: "#e87293" },
-    { n: "42 CANARY YELLOW", c: "#fdd703" },
-    { n: "43 LAVENDER PINK", c: "#eda8ba" },
-    { n: "44 SEAWEED GREEN", c: "#037064" },
-    { n: "45 KELLY GREEN", c: "#045b38" },
-    { n: "46 ROYAL PURPLE", c: "#4a3f73" },
-    { n: "47 TEAL", c: "#037374" },
-    { n: "48 FOGGY GREEN", c: "#778b6d" },
-    { n: "49 BUTTERSCOTCH", c: "#d4a15e" },
-    { n: "50 AQUAMARINE BLUE", c: "#03a6a4" },
-    { n: "51 GALAXY BLUE", c: "#2c3854" },
-    { n: "52 BRIGHT YELLOW", c: "#e9da02" },
-    { n: "53 FRESH MINT", c: "#80c99c" },
-    { n: "54 LIGHT KHAKI", c: "#81775d" },
-    { n: "55 POPPY RED", c: "#9f1e16" },
-    { n: "56 AUTUMN CAMO", multi: ["#e0301c", "#f59a1a", "#f2d22a", "#2a1a14", "#e85a18"] },
-    { n: "57 URBAN CAMO", multi: ["#141414", "#f0f0f0", "#8c8c8c", "#3c3c3c", "#d0d0d0"] },
-    { n: "58 BLUE CAMO", multi: ["#2f6fd0", "#78aef0", "#141a2a", "#e8eef6", "#1e4fa0"] }
+    { n: "26 VIVA LA VINO", c: "#a23a47" },
+    { n: "27 HOLY GUACAMOLE", c: "#b0b872" },
+    { n: "28 GOLD RUSH", c: "#eba91e" },
+    { n: "29 DEEP PURPLE", c: "#6f3e6f" },
+    { n: "30 SMOKE GREY", c: "#a6a39e" },
+    { n: "31 LAPIS BLUE", c: "#257493" },
+    { n: "32 MOCCA", c: "#ceb08f" },
+    { n: "33 ARMY GREEN", c: "#5a5930" },
+    { n: "34 GREECE BLUE", c: "#03729e" },
+    { n: "35 PEARL ROSÉ", c: "#dcbdb3" },
+    { n: "36 CHOCOLATE BROWN", c: "#623424" },
+    { n: "37 ROYAL ORANGE", c: "#fa922c" },
+    { n: "38 MOSS", c: "#9d9852" },
+    { n: "39 HAZELNUT BROWN", c: "#74503b" },
+    { n: "40 TURQUOISE", c: "#37bfc8" },
+    { n: "41 CERULEAN BLUE", c: "#03a3bf" },
+    { n: "42 BUBBLEGUM PINK", c: "#e87293" },
+    { n: "43 CANARY YELLOW", c: "#fdd703" },
+    { n: "44 LAVENDER PINK", c: "#eda8ba" },
+    { n: "45 SEAWEED GREEN", c: "#037064" },
+    { n: "46 KELLY GREEN", c: "#045b38" },
+    { n: "47 ROYAL PURPLE", c: "#4a3f73" },
+    { n: "48 TEAL", c: "#037374" },
+    { n: "49 FOGGY GREEN", c: "#778b6d" },
+    { n: "50 BUTTERSCOTCH", c: "#d4a15e" },
+    { n: "51 AQUAMARINE BLUE", c: "#03a6a4" },
+    { n: "52 GALAXY BLUE", c: "#2c3854" },
+    { n: "53 BRIGHT YELLOW", c: "#e9da02" },
+    { n: "54 FRESH MINT", c: "#80c99c" },
+    { n: "55 LIGHT KHAKI", c: "#81775d" },
+    { n: "56 POPPY RED", c: "#9f1e16" },
+    { n: "57 AUTUMN CAMO", multi: ["#e0301c", "#f59a1a", "#f2d22a", "#2a1a14", "#e85a18"], ltd: true },
+    { n: "58 URBAN CAMO", multi: ["#141414", "#f0f0f0", "#8c8c8c", "#3c3c3c", "#d0d0d0"], ltd: true },
+    { n: "59 BLUE CAMO", multi: ["#2f6fd0", "#78aef0", "#141a2a", "#e8eef6", "#1e4fa0"], ltd: true }
   ];
   /* 金具カラー：写真はSilver。Goldは写真の明暗を金色の階調に置き換える */
   var METALS = [
@@ -452,7 +455,18 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 
   function renderSwatches(box, list, key, dotFn) {
     while (box.firstChild) box.removeChild(box.firstChild);
-    list.forEach(function (o, i) {
+    /* アクセントコード：在庫限り(ltd)と定番を見出しで分ける。番号(i)は一覧の順のまま */
+    var order = list.map(function (o, i) { return i; });
+    var grouped = list.some(function (o) { return o.ltd; });
+    if (grouped) order = order.filter(function (i) { return list[i].ltd; }).concat(order.filter(function (i) { return !list[i].ltd; }));
+    order.forEach(function (i, k) {
+      var o = list[i];
+      if (grouped && (k === 0 || !!list[order[k - 1]].ltd !== !!o.ltd)) {
+        var h = document.createElement("p");
+        h.className = "cs-grp";
+        h.innerHTML = o.ltd ? "LIMITED<span>在庫限りのカラー</span>" : "STANDARD<span>定番カラー</span>";
+        box.appendChild(h);
+      }
       var b = document.createElement("button");
       b.type = "button";
       b.className = i === state[key] ? "on" : "";
@@ -467,7 +481,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
       b.addEventListener("click", function () {
         state[key] = i;
         var all = box.querySelectorAll("button");
-        for (var j = 0; j < all.length; j++) all[j].className = j === i ? "on" : "";
+        for (var j = 0; j < all.length; j++) all[j].className = all[j] === b ? "on" : "";
         draw();
       });
       box.appendChild(b);
