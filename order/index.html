@@ -67,10 +67,10 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     <p class="od-sum-t">ご注文内容</p>
     <pre class="od-text"></pre>
     <p class="od-total"></p>
-    <button type="button" class="od-send">内容をコピーしてDMを開く</button>
+    <button type="button" class="od-send">① 注文内容をコピー</button>
     <p class="od-done" aria-live="polite"></p>
-    <a class="od-ig" href="https://ig.me/m/404lab.doggear" target="_blank" rel="noopener" hidden>Instagramのメッセージを開く</a>
-    <p class="od-hint od-c">ボタンを押すと注文内容がコピーされ、404LabのInstagramのメッセージ画面が開きます。<br>メッセージ欄に<strong>貼り付けて送信</strong>してください。この時点ではまだご注文は確定しません。</p>
+    <a class="od-ig" href="https://ig.me/m/404lab.doggear" target="_blank" rel="noopener">② Instagramのメッセージを開く</a>
+    <p class="od-hint od-c">①でコピーしてから②でメッセージ画面を開き、<strong>貼り付けて送信</strong>してください。<br>うまくコピーできないときは、上の「ご注文内容」の<strong>スクリーンショット</strong>を送っていただいても大丈夫です。<br>この時点ではまだご注文は確定しません。</p>
   </div>
 
   <p class="cs-note">※実物の写真の色を置き換えたイメージです。画面の表示環境により実際の色と異なって見える場合があります。<br>※写真は8mmです。10mmは同じ写真で色だけを置き換えたイメージです。<br>※書体の見本は画面上のイメージです。実際の刻印の大きさは文字数やチャームの形で変わります。<br>※掲載画像の無断転載・無断使用を禁止します。© 404Lab</p>
@@ -132,7 +132,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 #lab404cs .od-memo{width:100%;background:#0b0a09;border:1px solid #4a4540;border-radius:8px;color:#f2ede6;font-size:16px;padding:10px 12px;font-family:inherit;margin-bottom:28px;resize:vertical}
 #lab404cs .od-sum{border:1px solid #c9a86a;border-radius:12px;padding:20px 18px 18px;margin-bottom:26px}
 #lab404cs .od-sum-t{font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:11px;letter-spacing:.32em;color:#c9a86a;margin-bottom:12px;text-align:center}
-#lab404cs .od-text{white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:13px;line-height:1.9;color:#f2ede6;margin:0 0 12px}
+#lab404cs .od-text{-webkit-user-select:text;user-select:text;white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:13px;line-height:1.9;color:#f2ede6;margin:0 0 12px}
 #lab404cs .od-total{text-align:center;font-size:20px;letter-spacing:.1em;color:#f2ede6;margin-bottom:16px;font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif}
 #lab404cs .od-total small{font-size:11px;color:#8d867d;letter-spacing:.04em;font-family:"Hiragino Sans","Yu Gothic",Meiryo,sans-serif}
 #lab404cs .od-send{display:block;width:100%;appearance:none;border:0;border-radius:999px;background:#c9a86a;color:#121110;font-size:14px;letter-spacing:.12em;padding:15px 10px;cursor:pointer;font-family:inherit;font-weight:400}
@@ -502,7 +502,8 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     root.querySelector(".cs-now-acc").textContent = a.n;
     root.querySelector(".cs-now-metal").textContent = mt.n;
     /* 注文フォームへ今の選択を知らせる */
-    root.dispatchEvent(new CustomEvent("cs-change", { detail: { size: state.size, rope: r.n, acc: a.n, metal: mt.n } }));
+    root.csLast = { size: state.size, rope: r.n, acc: a.n, metal: mt.n };
+    root.dispatchEvent(new CustomEvent("cs-change", { detail: root.csLast }));
   }
 
   function ropeDot(o) {
@@ -751,56 +752,65 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     var ready = b.state === "ok" || b.state === "over";
     var send = $(".od-send");
     send.disabled = !(ready && st.font >= 0);
-    send.textContent = send.disabled ? (ready ? "書体を選んでください" : "長さを入れてください") : "内容をコピーしてDMを開く";
+    send.textContent = send.disabled ? (ready ? "書体を選んでください" : "長さを入れてください") : "① 注文内容をコピー";
+    $(".od-done").textContent = "";
   }
 
-  /* その場ですぐコピーする方法（Androidは画面がInstagramに切り替わると後からのコピーが失敗するため、先にこれで確実にコピーする） */
-  function copyNow(text) {
+  /* 古いブラウザやInstagram内のブラウザ向けの予備のコピー方法。
+     iPhoneは読み取り専用の欄だと選択されずに空のままコピーされることがあるため、編集できる欄で選択する */
+  function copyOld(text) {
     var t = document.createElement("textarea");
-    t.value = text; t.setAttribute("readonly", "");
+    t.value = text; t.contentEditable = "true";
     t.style.position = "fixed"; t.style.top = "0"; t.style.left = "0"; t.style.opacity = "0"; t.style.fontSize = "16px";
     document.body.appendChild(t);
-    t.focus(); t.select(); t.setSelectionRange(0, text.length);
+    t.focus(); t.select();
+    var rg = document.createRange(); rg.selectNodeContents(t);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(rg);
+    t.setSelectionRange(0, text.length);
     var r = false; try { r = document.execCommand("copy"); } catch (e) {}
-    document.body.removeChild(t);
+    t.blur(); document.body.removeChild(t); s.removeAllRanges();
     return r;
   }
+  /* 画面はまだ切り替えないので、今のコピー方法の完了を待ってから結果を出せる */
   function copy(text) {
-    if (copyNow(text)) return Promise.resolve();
-    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-    return Promise.reject();
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () {
+        if (!copyOld(text)) throw new Error("copy");
+      });
+    }
+    return copyOld(text) ? Promise.resolve() : Promise.reject();
   }
   function selectSummary() {
     var r = document.createRange(); r.selectNodeContents($(".od-text"));
     var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
   }
 
-  root.addEventListener("cs-change", function (e) {
-    var d = e.detail, metalChanged = d.metal !== st.metal;
+  /* 写真の表示が注文欄より先に終わっていても、今の選択を受け取れるようにする */
+  function takeSel(d) {
+    var metalChanged = d.metal !== st.metal;
     st.size = d.size; st.rope = d.rope; st.acc = d.acc; st.metal = d.metal;
     if (metalChanged) renderShapes();
     update();
-  });
+  }
+  root.addEventListener("cs-change", function (e) { takeSel(e.detail); });
   $(".od-cm").addEventListener("input", update);
   $(".od-memo").addEventListener("input", update);
   $(".od-sample").addEventListener("input", renderFonts);
   $(".od-send").addEventListener("click", function () {
-    var done = $(".od-done"), ig = $(".od-ig");
-    ig.hidden = false;
-    /* コピーが終わってからInstagramを開く */
+    var done = $(".od-done");
+    /* Instagramは自動では開かない（画面が切り替わるとコピーが失敗する機種があるため、②のボタンで開いてもらう） */
     copy(lastText).then(function () {
-      done.textContent = "コピーしました。Instagramのメッセージ欄に貼り付けて送信してください。";
-      var w = window.open(DM_URL, "_blank");
-      if (!w) done.textContent += "（自動で開かないときは下のボタンから開いてください）";
+      done.textContent = "コピーしました。②のボタンでメッセージを開き、貼り付けて送信してください。";
     }, function () {
       selectSummary();
-      done.textContent = "自動でコピーできませんでした。上の注文内容を長押しでコピーしてから、下のボタンでInstagramを開いてください。";
+      done.textContent = "自動でコピーできませんでした。上の注文内容を長押ししてコピーするか、スクリーンショットを撮ってから②へ進んでください。";
     });
   });
 
   renderShapes();
   renderFonts();
   update();
+  if (root.csLast) takeSel(root.csLast);
 })();
 </script>
 <!-- ===== 404Lab カラーシミュレーター ここまで ===== -->
