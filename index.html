@@ -16,6 +16,13 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 .pg-ask b{display:block;font-size:14px;font-weight:400;color:#c9a86a;letter-spacing:.14em;margin-bottom:4px}
 .pg-line{background:#c9a86a;color:#121110}
 .pg-ig{border:1px solid #c9a86a;color:#c9a86a}
+.pg-copy{appearance:none;border:0;cursor:pointer;font-family:inherit;padding:14px 34px;border-radius:999px;font-size:14px;font-weight:400;letter-spacing:.12em;background:#c9a86a;color:#121110}
+.pg-done{max-width:680px;margin:12px auto 0;text-align:center;font-size:12px;line-height:1.7;color:#c9a86a;min-height:1px}
+.pg-fb{-webkit-user-select:text;user-select:text;white-space:pre-wrap;font-family:inherit;font-size:13px;line-height:1.9;max-width:420px;margin:12px auto 0;padding:12px 16px;border:1px solid #c9a86a;border-radius:10px;color:#f2ede6}
+.pg-fb[hidden]{display:none}
+.pg-two{max-width:680px;margin:18px auto 8px;text-align:center;font-size:12px;letter-spacing:.1em;color:#bdb6ad}
+.pg-line{border:1px solid #c9a86a}
+.pg-hint{max-width:480px;margin:12px auto 0;text-align:center;font-size:11px;line-height:1.8;color:#8d867d}
 .pg-sns{max-width:680px;margin:14px auto 0;text-align:center}
 .pg-sns a{color:#8d867d;font-size:11px;letter-spacing:.2em;text-decoration:none}
 .pg-foot{text-align:center;font-size:10px;letter-spacing:.2em;color:#5a544d;margin-top:28px}
@@ -527,11 +534,62 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 })();
 </script>
 <!-- ===== 404Lab カラーシミュレーター ここまで ===== -->
-<p class="pg-ask"><b>ご注文・ご相談</b>気になる組み合わせが見つかったら、お気軽にご連絡ください。<br>金具のサイズや長さなど、わからないことはご相談しながら一緒に決めます。</p>
+<p class="pg-ask"><b>ご注文・ご相談</b>気になる組み合わせが見つかったら、①でコピーして②から送ってください。<br>金具のサイズや長さなど、わからないことはご相談しながら一緒に決めます。</p>
+<div class="pg-links"><button type="button" class="pg-copy" data-item="リードのカラー">① この組み合わせをコピー</button></div>
+<p class="pg-done" aria-live="polite"></p>
+<pre class="pg-fb" hidden></pre>
+<p class="pg-two">② 送り先を選んでください</p>
 <div class="pg-links">
   <a class="pg-line" href="https://lin.ee/OSjJfcE" target="_blank" rel="noopener">公式LINEから注文</a>
   <a class="pg-ig" href="https://ig.me/m/404lab.doggear" target="_blank" rel="noopener">InstagramのDMから注文</a>
 </div>
+<p class="pg-hint">うまくコピーできないときは、写真の下の色の名前が見えるようにスクリーンショットを送っていただいても大丈夫です。</p>
+<script>
+/* 今選んでいる組み合わせをコピー（写真の下に出ている色の名前を使う） */
+(function () {
+  var btn = document.querySelector(".pg-copy"), done = document.querySelector(".pg-done"), fb = document.querySelector(".pg-fb");
+  if (!btn) return;
+  function txt(s) { var e = document.querySelector("#lab404cs " + s); return e ? e.textContent.trim() : ""; }
+  function text() {
+    return ["【404Lab " + (btn.getAttribute("data-item") || "カラー") + "】",
+      "ロープ：" + txt(".cs-now-rope"),
+      "アクセントコード：" + txt(".cs-now-acc"),
+      "金具：" + txt(".cs-now-metal")].join("\n");
+  }
+  /* 古いブラウザやInstagram内のブラウザ向けの予備のコピー方法（iPhoneで空コピーにならないよう、編集できる欄で選択する） */
+  function copyOld(t) {
+    var a = document.createElement("textarea");
+    a.value = t; a.contentEditable = "true";
+    a.style.position = "fixed"; a.style.top = "0"; a.style.left = "0"; a.style.opacity = "0"; a.style.fontSize = "16px";
+    document.body.appendChild(a);
+    a.focus(); a.select();
+    var r = document.createRange(); r.selectNodeContents(a);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    a.setSelectionRange(0, t.length);
+    var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+    a.blur(); document.body.removeChild(a); s.removeAllRanges();
+    return ok;
+  }
+  function copy(t) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(t).catch(function () { if (!copyOld(t)) throw new Error("copy"); });
+    }
+    return copyOld(t) ? Promise.resolve() : Promise.reject();
+  }
+  btn.addEventListener("click", function () {
+    var t = text();
+    fb.hidden = true;
+    copy(t).then(function () {
+      done.textContent = "コピーしました。②で公式LINEかInstagramのDMを開き、貼り付けて送信してください。";
+    }, function () {
+      fb.textContent = t; fb.hidden = false;
+      var r = document.createRange(); r.selectNodeContents(fb);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      done.textContent = "自動でコピーできませんでした。下の内容を長押ししてコピーするか、スクリーンショットを撮ってください。";
+    });
+  });
+})();
+</script>
 <p class="pg-sns"><a href="https://www.instagram.com/404lab.doggear/">Instagram @404lab.doggear</a></p>
 <p class="pg-foot">© 2026 404Lab All Rights Reserved.</p>
 </body>
