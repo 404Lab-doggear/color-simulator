@@ -629,7 +629,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     { id: "Cafe", d: "テーブルの脚などに固定できる\n約120cm" },
     { id: "Shoulder", d: "斜め掛けで両手が自由\n約2.3m・長さ調整可" }
   ];
-  /* 犬側の金具：標準からの差額 [Silver, Gold]。Goldは金具すべてのGold化込み。2026-09-29確定（TwinLink 10mmのナスカンS/M Goldは2026-11-09に+400/+500、レバーカンM Goldは+600へ） */
+  /* 犬側の金具：標準からの差額 [Silver, Gold]。Goldは金具すべてのGold化込み。2026-09-29確定（TwinLink 10mmのナスカンS/M Goldは2026-11-09に+400/+500、レバーカンM Goldは+600へ、8mmのレバーカンM Goldも+600へ） */
   var HOOKS = {
     "8":  [["ナスカンS", "NS"], ["ナスカンM", "NM"], ["レバーカンS", "LS"], ["レバーカンM", "LM"]],
     "10": [["ナスカンS", "NS"], ["ナスカンM", "NM"], ["ナスカンL", "NL"], ["レバーカンM", "LM"]]
@@ -638,7 +638,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   var OPT = {
     one:  { "8":  { NS: [0, 200], NM: [100, 300], LS: [100, 300], LM: [200, 400] },
             "10": { NS: [0, 200], NM: [0, 300], NL: [400, 600], LM: [100, 300] } },
-    twin: { "8":  { NS: [0, 400], NM: [200, 500], LS: [200, 400], LM: [300, 700] },
+    twin: { "8":  { NS: [0, 400], NM: [200, 500], LS: [200, 400], LM: [300, 600] },
             "10": { NS: [0, 400], NM: [0, 500], NL: [700, 1100], LM: [100, 600] } }
   };
   /* ===== 設定ここまで ===== */
