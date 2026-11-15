@@ -704,7 +704,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     $(".od-bi-row").hidden = !(bi || thin);
     $(".od-bi-label").textContent = thin ? "リード側の色（8mm）" : "ハンドル側の色";
     $(".od-duo-hint").textContent = is8
-      ? "太さ違いは、上の写真の太さを「10mm」にしたときに選べます。"
+      ? "太さ違いは、ハンドル・ショルダー部分が10mmの場合のみ選択できます。"
       : thin ? "上の写真で選んだ色はハンドル側（10mm）の色です。リード側の色は8mmのロープから選んでください。犬側の金具はリード側（8mm）に合わせて選びます。"
       : "上の写真で選んだ色はリード側の色です。";
     var ropes = (root.csRopes || {})[thin ? "8" : st.size] || [], sel = $(".od-bi-color"), keep = sel.value;
