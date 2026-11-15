@@ -54,11 +54,11 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 
   <div class="od-duo">
     <p class="cs-label">DuoSelect<span>バイカラー・太さ違い（追加料金なし）</span></p>
-    <label class="od-check"><input type="checkbox" class="od-bi"> バイカラーにする（ハンドルとリードで色を変える）</label>
-    <label class="od-field od-wide od-bi-row" hidden><span>ハンドル側の色</span><select class="od-bi-color"></select></label>
+    <label class="od-check od-bi-check"><input type="checkbox" class="od-bi"> バイカラーにする（ハンドルとリードで色を変える）</label>
     <label class="od-check"><input type="checkbox" class="od-thin"> 太さ違いにする（ハンドル側10mm・リード側8mm）</label>
+    <label class="od-field od-wide od-bi-row" hidden><span class="od-bi-label">ハンドル側の色</span><select class="od-bi-color"></select></label>
     <p class="od-msg od-duo-msg"></p>
-    <p class="od-hint">上の写真で選んだ色はリード側の色です。太さ違いの組み合わせや価格は、メッセージでご案内します。</p>
+    <p class="od-hint od-duo-hint"></p>
   </div>
 
   <p class="cs-label">HOOK<span>犬側の金具</span></p>
@@ -651,9 +651,13 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   function yen(v) { return v.toLocaleString("ja-JP") + "円"; }
   function ser() { return SERIES[st.series]; }
   function gold() { return st.metal === "GOLD"; }
-  function hookCode() { return st.hook === "STD" || st.hook === "ASK" ? STD[st.size] : st.hook; }
-  function hookDiff(code) { var t = OPT[ser().opt][st.size][code]; return t ? t[gold() ? 1 : 0] : 0; }
-  function hookName(code) { var h = HOOKS[st.size].filter(function (x) { return x[1] === code; })[0]; return h ? h[0] : ""; }
+  /* 2026-11-16：太さ違いは10mmのときだけ（8mmの価格で10mmハンドルが付くのを防ぐ）。
+     太さ違いのとき：写真＝ハンドル側10mm、リード側の色は8mmから選ぶ。価格は10mm、犬側の金具はリード側の8mmで選ぶ（スタッフ用価格計算アプリと同じ） */
+  function thinOn() { return ser().id === "DuoSelect" && st.size === "10" && $(".od-thin").checked; }
+  function hs() { return thinOn() ? "8" : st.size; }
+  function hookCode() { return st.hook === "STD" || st.hook === "ASK" ? STD[hs()] : st.hook; }
+  function hookDiff(code) { var t = OPT[ser().opt][hs()][code]; return t ? t[gold() ? 1 : 0] : 0; }
+  function hookName(code) { var h = HOOKS[hs()].filter(function (x) { return x[1] === code; })[0]; return h ? h[0] : ""; }
   function plus(v) { return v > 0 ? "+" + yen(v) : "追加料金なし"; }
 
   function cards(box, list, cur, onPick) {
@@ -679,50 +683,60 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
       function (k) { st.type = k; renderAll(); });
   }
   function renderHooks() {
-    var list = HOOKS[st.size].map(function (h) {
-      var d = hookDiff(h[1]), std = h[1] === STD[st.size];
+    var list = HOOKS[hs()].map(function (h) {
+      var d = hookDiff(h[1]), std = h[1] === STD[hs()];
       return { key: std ? "STD" : h[1], t: h[0], s: (std ? "標準" : "") + (std && d === 0 ? "" : (std ? "・" : "") + plus(d)) };
     });
     list.push({ key: "ASK", t: "相談して決めたい", s: "標準の金具で価格を表示" });
-    if (st.hook !== "STD" && st.hook !== "ASK" && !OPT[ser().opt][st.size][st.hook]) st.hook = "STD";
+    if (st.hook !== "STD" && st.hook !== "ASK" && !OPT[ser().opt][hs()][st.hook]) st.hook = "STD";
     cards($(".od-hook"), list, st.hook, function (k) { st.hook = k; renderAll(); });
   }
   function renderDuo() {
     var duo = ser().id === "DuoSelect";
     $(".od-duo").hidden = !duo;
     if (!duo) return;
-    var bi = $(".od-bi").checked, thin = $(".od-thin").checked;
-    $(".od-bi-row").hidden = !bi;
-    var ropes = (root.csRopes || {})[thin ? "10" : st.size] || [], sel = $(".od-bi-color"), keep = sel.value;
+    var is8 = st.size === "8", tb = $(".od-thin");
+    if (is8) tb.checked = false;
+    tb.disabled = is8;
+    var bi = $(".od-bi").checked, thin = thinOn();
+    // 太さ違いのときは、リード側(8mm)の色を選ぶ欄を出す（同じ色でも違う色でもOK）
+    $(".od-bi-check").hidden = thin;
+    $(".od-bi-row").hidden = !(bi || thin);
+    $(".od-bi-label").textContent = thin ? "リード側の色（8mm）" : "ハンドル側の色";
+    $(".od-duo-hint").textContent = is8
+      ? "太さ違いは、上の写真の太さを「10mm」にしたときに選べます。"
+      : thin ? "上の写真で選んだ色はハンドル側（10mm）の色です。リード側の色は8mmのロープから選んでください。犬側の金具はリード側（8mm）に合わせて選びます。"
+      : "上の写真で選んだ色はリード側の色です。";
+    var ropes = (root.csRopes || {})[thin ? "8" : st.size] || [], sel = $(".od-bi-color"), keep = sel.value;
     sel.innerHTML = "";
     ropes.forEach(function (r) { var o = document.createElement("option"); o.value = o.textContent = r.n; sel.appendChild(o); });
     if (keep && ropes.some(function (r) { return r.n === keep; })) sel.value = keep;
+    else if (thin && ropes.some(function (r) { return r.n === st.rope; })) sel.value = st.rope;
   }
 
   var lastText = "";
   function update() {
     var s = ser(), duo = s.id === "DuoSelect";
-    var bi = duo && $(".od-bi").checked, thin = duo && $(".od-thin").checked;
+    var thin = thinOn(), bi = duo && !thin && $(".od-bi").checked;
     var base = s.price[st.size][st.type], code = hookCode(), d = hookDiff(code);
     var kg = $(".od-kg").value.trim(), breed = $(".od-breed").value.trim(), memo = $(".od-memo").value.trim();
-    var hookTxt = st.hook === "ASK" ? "相談して決めたい（体重・犬種からご提案ください）" : hookName(code) + (code === STD[st.size] ? "（標準）" : "");
+    var hookTxt = st.hook === "ASK" ? "相談して決めたい（体重・犬種からご提案ください）" : hookName(code) + (code === STD[hs()] ? "（標準）" : "");
     var lines = ["【リード 注文】",
       "シリーズ：" + s.id,
       "タイプ：" + TYPES[st.type].id,
-      "太さ：" + (thin ? "太さ違い（ハンドル10mm・リード8mm）" : st.size + "mm"),
-      "ロープ：" + st.rope + (bi ? "（リード側）" : "")
+      "太さ：" + (thin ? "太さ違い（ハンドル10mm・リード8mm）" : st.size + "mm")
     ];
-    if (bi) lines.push("ハンドル側の色：" + $(".od-bi-color").value + (thin ? "（10mm）" : ""));
+    if (thin) lines.push("ロープ：ハンドル側 " + st.rope + "（10mm）／リード側 " + $(".od-bi-color").value + "（8mm）");
+    else {
+      lines.push("ロープ：" + st.rope + (bi ? "（リード側）" : ""));
+      if (bi) lines.push("ハンドル側の色：" + $(".od-bi-color").value);
+    }
     lines.push("アクセントコード：" + st.acc, "金具カラー：" + st.metal, "犬側の金具：" + hookTxt);
     if (breed || kg) lines.push("わんちゃん：" + [breed, kg ? kg + "kg" : ""].filter(Boolean).join("・"));
     if (memo) lines.push("ご要望：" + memo);
 
     var msg = "", total = $(".od-total");
-    if (thin && st.size !== "8") msg = "太さ違いのときは、上の写真の太さを「8mm」にしてリード側の色を選んでください。";
-    if (thin) {
-      lines.push("価格：メッセージでご案内");
-      total.innerHTML = '<small>太さ違いの価格は、メッセージでご案内します</small>';
-    } else {
+    {
       var p = base + d;
       var lab = gold() ? "金具（GOLD・変更）" : "金具の変更";
       lines.push("価格（目安）：" + yen(p) + (d > 0 ? "（本体 " + yen(base) + " + " + lab + " " + yen(d) + "）" : ""));
@@ -770,7 +784,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   }
   root.addEventListener("cs-change", function (e) { takeSel(e.detail); });
   [".od-breed", ".od-kg", ".od-memo"].forEach(function (s) { $(s).addEventListener("input", update); });
-  [".od-bi", ".od-thin"].forEach(function (s) { $(s).addEventListener("change", function () { renderDuo(); update(); }); });
+  [".od-bi", ".od-thin"].forEach(function (s) { $(s).addEventListener("change", renderAll); });
   $(".od-bi-color").addEventListener("change", update);
   $(".od-send").addEventListener("click", function () {
     var done = $(".od-done");
