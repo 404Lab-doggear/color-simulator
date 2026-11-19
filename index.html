@@ -44,6 +44,11 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   <div class="cs-stage"><canvas class="cs-cv" width="1200" height="340"></canvas></div>
   <p class="cs-copy">※掲載画像の無断転載・無断使用を禁止します。© 404Lab</p>
   <p class="cs-now"><span class="cs-now-rope"></span><span class="cs-x">×</span><span class="cs-now-acc"></span><span class="cs-x">×</span><span class="cs-now-metal"></span></p>
+  <div class="cs-ref">
+    <figure class="cs-ref-rope"><img alt="" decoding="async"><figcaption></figcaption></figure>
+    <figure class="cs-ref-acc"><img alt="" decoding="async"><figcaption></figcaption></figure>
+  </div>
+  <p class="cs-ref-note">※選んだカラーの、仕入れ先（Paracord.eu）の商品写真です。</p>
 
   <p class="cs-label">ROPE<span>ロープカラー</span></p>
   <div class="cs-sw cs-sw-rope"></div>
@@ -70,6 +75,13 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 #lab404cs .cs-tabs button.on{border-color:#c9a86a;color:#c9a86a}
 #lab404cs .cs-stage{overflow:hidden;background:#121110}
 #lab404cs .cs-cv{display:block;width:100%;height:auto}
+#lab404cs .cs-ref{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:-14px 0 6px}
+#lab404cs .cs-ref figure{margin:0}
+#lab404cs .cs-ref figure[hidden]{display:none}
+#lab404cs .cs-ref img{width:100%;aspect-ratio:1;object-fit:cover;display:block;border-radius:6px;background:#1c1a18}
+#lab404cs .cs-ref figcaption{font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:9px;letter-spacing:.08em;line-height:1.5;color:#8d867d;margin-top:6px;text-align:center}
+#lab404cs .cs-ref figcaption b{display:block;font-weight:400;color:#c9a86a;letter-spacing:.24em}
+#lab404cs .cs-ref-note{font-size:9px;color:#6f6961;margin:0 0 26px;text-align:center}
 #lab404cs .cs-mini{position:fixed;top:10px;right:10px;z-index:9999;width:min(44vw,230px);background:#121110;border:1px solid #c9a86a;border-radius:8px;padding:4px;box-shadow:0 6px 22px rgba(0,0,0,.55);opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s,transform .25s,visibility .25s;cursor:pointer;box-sizing:border-box}
 #lab404cs .cs-mini.wide{width:min(calc(100vw - 20px),460px)}
 #lab404cs .cs-mini.on{opacity:1;visibility:visible;transform:none}
@@ -101,95 +113,95 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   /* c = 色（#16進）、photo = 柄物ロープは写真をそのまま使う、multi = 柄物アクセントコード、orig = 元写真の色そのまま */
   var ROPES = {
     "10": [
-      { n: "VIVA LA VINO", c: "#c24162" },
-      { n: "POPPY RED", c: "#d71311" },
-      { n: "COPPER RED", c: "#bd4037", nw: true },
-      { n: "GOLDEN COPPER GLAMOUR", c: "#e99660" },
-      { n: "MULTIVITAMIN ORANGE", c: "#ff6400" },
-      { n: "GOLD", c: "#eab866" },
-      { n: "OLIVE DRAB", c: "#585333", nw: true },
-      { n: "ARMY GREEN", c: "#5d592c" },
-      { n: "METALLIC KELLY GREEN", c: "#308f57" },
-      { n: "SEA GREEN", c: "#b9dec9" },
-      { n: "LAPIS BLUE", c: "#3a97c9" },
-      { n: "NAVY", c: "#1d2d42" },
-      { n: "ROYAL PURPLE", c: "#694ca3" },
-      { n: "FUCHSIA", c: "#d32a76", nw: true },
-      { n: "GOLD BROWN", c: "#c3986b" },
-      { n: "PEARL ROSÉ", c: "#be9783" },
-      { n: "BRONZE BROWN", c: "#9b3e2d" },
-      { n: "CHOCOLATE BROWN", c: "#884121", nw: true },
-      { n: "HAZELNUT BROWN", c: "#694938", nw: true },
-      { n: "WALNUT BROWN", c: "#60311f", nw: true },
-      { n: "BLACK", c: "#201d1a", orig: true },
-      { n: "HARLEQUIN", photo: "harl" }
+      { n: "VIVA LA VINO", c: "#c24162", p: "10N-003" },
+      { n: "POPPY RED", c: "#d71311", p: "10N-013" },
+      { n: "COPPER RED", c: "#bd4037", nw: true, p: "10N-018" },
+      { n: "GOLDEN COPPER GLAMOUR", c: "#e99660", p: "10N-035" },
+      { n: "MULTIVITAMIN ORANGE", c: "#ff6400", p: "10N-033" },
+      { n: "GOLD", c: "#eab866", p: "10N-055" },
+      { n: "OLIVE DRAB", c: "#585333", nw: true, p: "10N-067" },
+      { n: "ARMY GREEN", c: "#5d592c", p: "10P-030" },
+      { n: "METALLIC KELLY GREEN", c: "#308f57", p: "10N-080" },
+      { n: "SEA GREEN", c: "#b9dec9", p: "10P-040" },
+      { n: "LAPIS BLUE", c: "#3a97c9", p: "10N-099" },
+      { n: "NAVY", c: "#1d2d42", p: "10N-103" },
+      { n: "ROYAL PURPLE", c: "#694ca3", p: "10N-110" },
+      { n: "FUCHSIA", c: "#d32a76", nw: true, p: "10P-062" },
+      { n: "GOLD BROWN", c: "#c3986b", p: "10P-020" },
+      { n: "PEARL ROSÉ", c: "#be9783", p: "10N-030" },
+      { n: "BRONZE BROWN", c: "#9b3e2d", p: "10N-023" },
+      { n: "CHOCOLATE BROWN", c: "#884121", nw: true, p: "10N-031" },
+      { n: "HAZELNUT BROWN", c: "#694938", nw: true, p: "10N-032" },
+      { n: "WALNUT BROWN", c: "#60311f", nw: true, p: "10N-027" },
+      { n: "BLACK", c: "#201d1a", orig: true, p: "10P-078" },
+      { n: "HARLEQUIN", photo: "harl", p: "10P-094" }
     ],
     "8": [
-      { n: "RED VELVET", c: "#fe0d50", nw: true },
-      { n: "VIVA LA VINO", c: "#c24162" },
-      { n: "IMPERIAL RED", c: "#ee2023" },
-      { n: "GOLDEN COPPER GLAMOUR", c: "#ff9e4d" },
-      { n: "GOLD", c: "#d3a14d" },
-      { n: "LEMON YELLOW", c: "#ffc919" },
-      { n: "ARMY GREEN", c: "#5d592c" },
-      { n: "SEA GREEN", c: "#a6c3b2" },
-      { n: "METALLIC KELLY GREEN", c: "#308f57" },
-      { n: "TEAL", c: "#077166" },
-      { n: "TURQUOISE", c: "#43ede5", nw: true },
-      { n: "CERULEAN BLUE", c: "#0093a2" },
-      { n: "AQUA", c: "#066869" },
-      { n: "ICE BLUE", c: "#77a3ac" },
-      { n: "NAVY BLUE", c: "#1b2b3e" },
-      { n: "ELECTRIC BLUE", c: "#003eaf" },
-      { n: "PEARL ROSÉ", c: "#be9784" },
-      { n: "BLACK CARBON", c: "#1c1b1c" },
-      { n: "BLACK", c: "#252525", orig: true },
-      { n: "HARLEQUIN", photo: "harl" }
+      { n: "RED VELVET", c: "#fe0d50", nw: true, p: "8N-001" },
+      { n: "VIVA LA VINO", c: "#c24162", p: "8N-003" },
+      { n: "IMPERIAL RED", c: "#ee2023", p: "8N-012" },
+      { n: "GOLDEN COPPER GLAMOUR", c: "#ff9e4d", p: "8N-028" },
+      { n: "GOLD", c: "#d3a14d", p: "8N-041" },
+      { n: "LEMON YELLOW", c: "#ffc919", p: "8P-013" },
+      { n: "ARMY GREEN", c: "#5d592c", p: "8N-051" },
+      { n: "SEA GREEN", c: "#a6c3b2", p: "8P-033" },
+      { n: "METALLIC KELLY GREEN", c: "#308f57", p: "8N-059" },
+      { n: "TEAL", c: "#077166", p: "8N-062" },
+      { n: "TURQUOISE", c: "#43ede5", nw: true, p: "8N-063" },
+      { n: "CERULEAN BLUE", c: "#0093a2", p: "8N-065" },
+      { n: "AQUA", c: "#066869", p: "8P-021" },
+      { n: "ICE BLUE", c: "#77a3ac", p: "8N-066" },
+      { n: "NAVY BLUE", c: "#1b2b3e", p: "8N-069" },
+      { n: "ELECTRIC BLUE", c: "#003eaf", p: "8N-070" },
+      { n: "PEARL ROSÉ", c: "#be9784", p: "8N-023" },
+      { n: "BLACK CARBON", c: "#1c1b1c", p: "8N-083" },
+      { n: "BLACK", c: "#252525", orig: true, p: "8N-082" },
+      { n: "HARLEQUIN", photo: "harl", p: "8P-045" }
     ]
   };
   /* アクセントコード：赤系から色の順に並べて番号を振り直した（2026-11-19）。在庫限りのカラーは削除 */
   var ACCENTS = [
-    { n: "01 RED VELVET", c: "#ff1439", nw: true },
-    { n: "02 VIVA LA VINO", c: "#b93c4c" },
-    { n: "03 IMPERIAL RED", c: "#f52a24", nw: true },
-    { n: "04 CHILI RED", c: "#ef2c22" },
+    { n: "01 RED VELVET", c: "#ff1439", nw: true, p: "AC-002" },
+    { n: "02 VIVA LA VINO", c: "#b93c4c", p: "AC-003" },
+    { n: "03 IMPERIAL RED", c: "#f52a24", nw: true, p: "AC-011" },
+    { n: "04 CHILI RED", c: "#ef2c22", p: "AC-013" },
     { n: "05 POPPY RED", c: "#b51a11" },
-    { n: "06 GOLDEN COPPER GLAMOUR", c: "#ffa44c" },
-    { n: "07 ROYAL ORANGE", c: "#ff900b" },
-    { n: "08 BUTTERSCOTCH", c: "#f5b867" },
-    { n: "09 GOLD", c: "#facf79" },
-    { n: "10 GOLD RUSH", c: "#ffb604" },
-    { n: "11 CANARY YELLOW", c: "#ffe600" },
-    { n: "12 BRIGHT YELLOW", c: "#fff500" },
-    { n: "13 MOSS", c: "#b3ad59" },
-    { n: "14 ARMY GREEN", c: "#626130" },
-    { n: "15 HOLY GUACAMOLE", c: "#cad37f" },
-    { n: "16 FOGGY GREEN", c: "#859d79" },
+    { n: "06 GOLDEN COPPER GLAMOUR", c: "#ffa44c", p: "AC-024" },
+    { n: "07 ROYAL ORANGE", c: "#ff900b", p: "AC-025" },
+    { n: "08 BUTTERSCOTCH", c: "#f5b867", p: "AC-028" },
+    { n: "09 GOLD", c: "#facf79", p: "AC-033" },
+    { n: "10 GOLD RUSH", c: "#ffb604", p: "AC-034" },
+    { n: "11 CANARY YELLOW", c: "#ffe600", p: "AC-040" },
+    { n: "12 BRIGHT YELLOW", c: "#fff500", p: "AC-044" },
+    { n: "13 MOSS", c: "#b3ad59", p: "AC-043" },
+    { n: "14 ARMY GREEN", c: "#626130", p: "AC-045" },
+    { n: "15 HOLY GUACAMOLE", c: "#cad37f", p: "AC-050" },
+    { n: "16 FOGGY GREEN", c: "#859d79", p: "AC-053" },
     { n: "17 FRESH MINT", c: "#90e8b2" },
-    { n: "18 KELLY GREEN", c: "#00643a" },
-    { n: "19 SEAWEED GREEN", c: "#007d6f" },
-    { n: "20 AQUAMARINE BLUE", c: "#00bebb" },
-    { n: "21 TEAL", c: "#008182" },
-    { n: "22 TURQUOISE", c: "#38dce7" },
-    { n: "23 CERULEAN BLUE", c: "#00badc" },
-    { n: "24 LAPIS BLUE", c: "#2382a7" },
-    { n: "25 GREECE BLUE", c: "#007fb4" },
-    { n: "26 GALAXY BLUE", c: "#2b3a5b" },
-    { n: "27 ELECTRIC BLUE", c: "#3644a3", nw: true },
-    { n: "28 ROYAL PURPLE", c: "#4f4281" },
-    { n: "29 DEEP PURPLE", c: "#7c417c" },
-    { n: "30 PASSION PINK", c: "#ff3e9b" },
-    { n: "31 BUBBLEGUM PINK", c: "#ff779e" },
-    { n: "32 LAVENDER PINK", c: "#ffb5ca" },
-    { n: "33 PEARL ROSÉ", c: "#ffd9cd" },
-    { n: "34 MOCCA", c: "#eecaa2" },
+    { n: "18 KELLY GREEN", c: "#00643a", p: "AC-059" },
+    { n: "19 SEAWEED GREEN", c: "#007d6f", p: "AC-064" },
+    { n: "20 AQUAMARINE BLUE", c: "#00bebb", p: "AC-066" },
+    { n: "21 TEAL", c: "#008182", p: "AC-067" },
+    { n: "22 TURQUOISE", c: "#38dce7", p: "AC-068" },
+    { n: "23 CERULEAN BLUE", c: "#00badc", p: "AC-070" },
+    { n: "24 LAPIS BLUE", c: "#2382a7", p: "AC-072" },
+    { n: "25 GREECE BLUE", c: "#007fb4", p: "AC-073" },
+    { n: "26 GALAXY BLUE", c: "#2b3a5b", p: "AC-078" },
+    { n: "27 ELECTRIC BLUE", c: "#3644a3", nw: true, p: "AC-080" },
+    { n: "28 ROYAL PURPLE", c: "#4f4281", p: "AC-082" },
+    { n: "29 DEEP PURPLE", c: "#7c417c", p: "AC-085" },
+    { n: "30 PASSION PINK", c: "#ff3e9b", p: "AC-087" },
+    { n: "31 BUBBLEGUM PINK", c: "#ff779e", p: "AC-089" },
+    { n: "32 LAVENDER PINK", c: "#ffb5ca", p: "AC-090" },
+    { n: "33 PEARL ROSÉ", c: "#ffd9cd", p: "AC-017" },
+    { n: "34 MOCCA", c: "#eecaa2", p: "AC-027" },
     { n: "35 LIGHT KHAKI", c: "#918566" },
-    { n: "36 HAZELNUT BROWN", c: "#82563d" },
-    { n: "37 CHOCOLATE BROWN", c: "#6c3522" },
-    { n: "38 BLACK", c: "#1c1c1c", nw: true },
-    { n: "39 PURPLE GREY", c: "#9796a7", nw: true },
-    { n: "40 SMOKE GREY", c: "#bebab4" },
-    { n: "41 SILVER GREY", c: "#dee1d9", nw: true }
+    { n: "36 HAZELNUT BROWN", c: "#82563d", p: "AC-022" },
+    { n: "37 CHOCOLATE BROWN", c: "#6c3522", p: "AC-018" },
+    { n: "38 BLACK", c: "#1c1c1c", nw: true, p: "AC-104" },
+    { n: "39 PURPLE GREY", c: "#9796a7", nw: true, p: "AC-094" },
+    { n: "40 SMOKE GREY", c: "#bebab4", p: "AC-093" },
+    { n: "41 SILVER GREY", c: "#dee1d9", nw: true, p: "AC-092" }
   ];
   /* 金具カラー：写真はSilver。Goldは写真の明暗を金色の階調に置き換える */
   var METALS = [
@@ -568,6 +580,30 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     mini.addEventListener("click", function () { cv.scrollIntoView({ behavior: "smooth", block: "center" }); });
     var baseDraw = draw;
     draw = function () { baseDraw.apply(this, arguments); sync(); };
+  })();
+
+  /* 選んだロープ・アクセントコードの仕入れ先（Paracord.eu）の商品写真。写真は公開ページの photos/ に置いてある */
+  (function () {
+    var BASE = "https://404lab-doggear.github.io/color-simulator/photos/";
+    var figs = { rope: root.querySelector(".cs-ref-rope"), acc: root.querySelector(".cs-ref-acc") };
+    function show(fig, o, label, name) {
+      if (!fig) return;
+      if (!o || !o.p) { fig.hidden = true; return; }
+      fig.hidden = false;
+      var img = fig.querySelector("img"), src = BASE + o.p + ".jpg";
+      img.onerror = function () { img.removeAttribute("src"); fig.hidden = true; };   /* 写真が読めないときは欄ごと隠す */
+      if (img.getAttribute("src") !== src) { img.src = src; img.alt = name; }
+      fig.querySelector("figcaption").innerHTML = "<b>" + label + "</b>" + name;
+    }
+    function upd() {
+      var r = ROPES[state.size][state.rope], a = ACCENTS[state.acc];
+      show(figs.rope, r, "ROPE", (/^\d+$/.test(state.size) ? state.size + "mm " : "") + r.n);
+      show(figs.acc, a, "ACCENT CORD", a.n);
+      var note = root.querySelector(".cs-ref-note");
+      if (note) note.hidden = figs.rope.hidden && figs.acc.hidden;
+    }
+    var prevDraw = draw;
+    draw = function () { prevDraw.apply(this, arguments); upd(); };
   })();
 })();
 </script>
