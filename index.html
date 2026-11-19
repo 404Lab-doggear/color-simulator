@@ -70,6 +70,11 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 #lab404cs .cs-tabs button.on{border-color:#c9a86a;color:#c9a86a}
 #lab404cs .cs-stage{overflow:hidden;background:#121110}
 #lab404cs .cs-cv{display:block;width:100%;height:auto}
+#lab404cs .cs-mini{position:fixed;top:10px;right:10px;z-index:9999;width:min(44vw,230px);background:#121110;border:1px solid #c9a86a;border-radius:8px;padding:4px;box-shadow:0 6px 22px rgba(0,0,0,.55);opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s,transform .25s,visibility .25s;cursor:pointer;box-sizing:border-box}
+#lab404cs .cs-mini.wide{width:min(calc(100vw - 20px),460px)}
+#lab404cs .cs-mini.on{opacity:1;visibility:visible;transform:none}
+#lab404cs .cs-mini canvas{display:block;width:100%;height:auto;border-radius:5px}
+#lab404cs .cs-mini p{margin:4px 2px 1px;font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:9px;letter-spacing:.06em;line-height:1.35;color:#f2ede6;text-align:center}
 #lab404cs .cs-copy{text-align:right;font-size:9px;letter-spacing:.04em;color:#6f6961;margin:6px 2px 0}
 #lab404cs .cs-now{text-align:center;font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:13px;font-weight:300;letter-spacing:.14em;margin:16px 0 28px;line-height:1.7;color:#f2ede6}
 #lab404cs .cs-x{margin:0 10px;color:#c9a86a}
@@ -530,6 +535,40 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
       im.src = TEX[key];
     })(k);
   }
+
+  /* 写真が画面の上に隠れたら、小窓で追従表示する（スマホで色を選びながら確認できるように）。小窓をタップすると写真まで戻る */
+  (function () {
+    var mini = document.createElement("div");
+    mini.className = "cs-mini" + (CW / CH > 2 ? " wide" : "");
+    mini.setAttribute("aria-hidden", "true");
+    var mc = document.createElement("canvas");
+    mc.width = Math.round(CW / 2); mc.height = Math.round(CH / 2);
+    var mx = mc.getContext("2d");
+    var cap = document.createElement("p");
+    mini.appendChild(mc); mini.appendChild(cap);
+    root.appendChild(mini);
+    var last = root.querySelector(".cs-sw-metal") || root;
+    function sync() {
+      mx.clearRect(0, 0, mc.width, mc.height);
+      mx.drawImage(cv, 0, 0, mc.width, mc.height);
+      var now = root.querySelector(".cs-now");
+      cap.textContent = now ? now.textContent.replace(/×/g, " × ") : "";
+    }
+    var queued = false;
+    function place() {
+      queued = false;
+      var a = cv.getBoundingClientRect(), z = last.getBoundingClientRect();
+      var show = a.bottom < 40 && z.bottom > 120;
+      if (show && !mini.classList.contains("on")) sync();
+      mini.classList.toggle("on", show);
+    }
+    function onScroll() { if (!queued) { queued = true; requestAnimationFrame(place); } }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    mini.addEventListener("click", function () { cv.scrollIntoView({ behavior: "smooth", block: "center" }); });
+    var baseDraw = draw;
+    draw = function () { baseDraw.apply(this, arguments); sync(); };
+  })();
 })();
 </script>
 <!-- ===== 404Lab カラーシミュレーター ここまで ===== -->
