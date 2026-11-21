@@ -86,6 +86,10 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
 #lab404cs .cs-mini.on{opacity:1;visibility:visible;transform:none}
 #lab404cs .cs-mini canvas{display:block;width:100%;height:auto;border-radius:5px}
 #lab404cs .cs-mini p{margin:4px 2px 1px;font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:9px;letter-spacing:.06em;line-height:1.35;color:#f2ede6;text-align:center}
+#lab404cs .cs-mini .cs-mth{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:5px;margin-top:4px}
+#lab404cs .cs-mini .cs-mth img{width:40px;height:40px;flex:none;object-fit:cover;border-radius:4px;background:#1c1a18}
+#lab404cs .cs-mini .cs-mth img[hidden]{display:none}
+#lab404cs .cs-mini .cs-mth p{flex:1 1 160px;margin:0 2px;text-align:center}
 #lab404cs .cs-copy{text-align:right;font-size:9px;letter-spacing:.04em;color:#6f6961;margin:6px 2px 0}
 #lab404cs .cs-now{text-align:center;font-family:"Helvetica Neue","Segoe UI",Arial,sans-serif;font-size:13px;font-weight:300;letter-spacing:.14em;margin:16px 0 28px;line-height:1.7;color:#f2ede6}
 #lab404cs .cs-x{margin:0 10px;color:#c9a86a}
@@ -555,12 +559,24 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
     mc.width = Math.round(CW / 2); mc.height = Math.round(CH / 2);
     var mx = mc.getContext("2d");
     var cap = document.createElement("p");
-    mini.appendChild(mc); mini.appendChild(cap);
+    /* 小窓の下段：実物（仕入れ先の商品写真）のロープ・アクセントコードを小さく並べる */
+    var row = document.createElement("div"), t1 = document.createElement("img"), t2 = document.createElement("img");
+    row.className = "cs-mth"; t1.alt = ""; t2.alt = "";
+    t1.onerror = t2.onerror = function () { this.removeAttribute("src"); this.hidden = true; };   /* 読めないときは隠す */
+    row.appendChild(t1); row.appendChild(t2); row.appendChild(cap);
+    function thumb(el, im) {
+      var s = im && !(im.closest("figure") || im).hidden && im.getAttribute("src");
+      if (!s) { el.hidden = true; return; }
+      el.hidden = false; if (el.getAttribute("src") !== s) el.src = s;
+    }
+    function thumbs() { thumb(t1, root.querySelector(".cs-ref-rope img")); thumb(t2, root.querySelector(".cs-ref-acc img")); }
+    mini.appendChild(mc); mini.appendChild(row);
     root.appendChild(mini);
     var last = root.querySelector(".cs-sw-metal") || root;
     function sync() {
       mx.clearRect(0, 0, mc.width, mc.height);
       mx.drawImage(cv, 0, 0, mc.width, mc.height);
+      setTimeout(thumbs, 0);   /* 商品写真は描画のあとに切り替わるので、少し待ってから読む */
       var now = root.querySelector(".cs-now");
       cap.textContent = now ? now.textContent.replace(/×/g, " × ") : "";
     }
