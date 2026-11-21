@@ -58,9 +58,10 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   <p class="od-hint od-c">長さは1頭用の目安です。TwinLinkの長さや、長さを変えたいときはご要望欄へどうぞ（延長は追加料金がかかります）。</p>
 
   <div class="od-duo">
-    <p class="cs-label">DuoSelect<span>バイカラー・太さ違い（追加料金なし）</span></p>
+    <p class="cs-label">DuoSelect<span>バイカラー・太さ違い（追加料金なし）／着せ替え化（＋300円）</span></p>
     <label class="od-check od-bi-check"><input type="checkbox" class="od-bi"> バイカラーにする（ハンドルとリードで色を変える）</label>
     <label class="od-check"><input type="checkbox" class="od-thin"> 太さ違いにする（ハンドル側10mm・リード側8mm）</label>
+    <label class="od-check"><input type="checkbox" class="od-kise"> 着せ替え化にする（＋300円）</label>
     <label class="od-field od-wide od-bi-row" hidden><span class="od-bi-label">ハンドル側の色</span><select class="od-bi-color"></select></label>
     <p class="od-msg od-duo-msg"></p>
     <p class="od-hint od-duo-hint"></p>
@@ -707,9 +708,9 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   /* ===== 設定：価格を変えるときはここだけ直せばOK（正本：第二の脳/副業ノート/金具原価表.md） ===== */
   /* 本体価格（Silver・標準金具：8mmナスカンS、10mmナスカンM）。2026-11-09 */
   var SERIES = [
-    { id: "Classic", d: "1色でシンプルに", note: "バイカラー・太さ違いはできません",
+    { id: "Classic", d: "1色でシンプルに", note: "バイカラー・太さ違い・着せ替え化はできません",
       price: { "8": [4000, 5000, 6000], "10": [4500, 5500, 6500] }, opt: "one" },
-    { id: "DuoSelect", d: "バイカラー・太さ違いが選べる", note: "",
+    { id: "DuoSelect", d: "バイカラー・太さ違い・着せ替え化が選べる", note: "",
       price: { "8": [4500, 5500, 6500], "10": [5000, 6000, 7000] }, opt: "one" },
     { id: "TwinLink", d: "2頭引き", note: "",
       price: { "8": [5500, 6500, 7500], "10": [7500, 8500, 9500] }, opt: "twin" }
@@ -821,16 +822,22 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
       lines.push("ロープ：" + st.rope + (bi ? "（リード側）" : ""));
       if (bi) lines.push("ハンドル側の色：" + $(".od-bi-color").value);
     }
+    /* 2026-11-22：DuoSelectの着せ替え化オプション（+300円、スタッフ用価格計算アプリと同じ） */
+    var kise = duo && $(".od-kise").checked ? 300 : 0;
+    if (kise) lines.push("着せ替え化：あり（＋300円）");
     lines.push("アクセントコード：" + st.acc, "金具カラー：" + st.metal, "犬側の金具：" + hookTxt);
     if (breed || kg) lines.push("わんちゃん：" + [breed, kg ? kg + "kg" : ""].filter(Boolean).join("・"));
     if (memo) lines.push("ご要望：" + memo);
 
     var msg = "", total = $(".od-total");
     {
-      var p = base + d;
+      var p = base + d + kise;
       var lab = gold() ? "金具（GOLD・変更）" : "金具の変更";
-      lines.push("価格（目安）：" + yen(p) + (d > 0 ? "（本体 " + yen(base) + " + " + lab + " " + yen(d) + "）" : ""));
-      total.innerHTML = yen(p) + "<small>" + (d > 0 ? "本体 " + yen(base) + " ＋ " + lab + " " + yen(d) + "<br>" : "") + "送料などはメッセージでご案内します</small>";
+      var adds = [];
+      if (d > 0) adds.push(lab + " " + yen(d));
+      if (kise) adds.push("着せ替え化 " + yen(kise));
+      lines.push("価格（目安）：" + yen(p) + (adds.length ? "（本体 " + yen(base) + " + " + adds.join(" + ") + "）" : ""));
+      total.innerHTML = yen(p) + "<small>" + (adds.length ? "本体 " + yen(base) + " ＋ " + adds.join(" ＋ ") + "<br>" : "") + "送料などはメッセージでご案内します</small>";
     }
     $(".od-duo-msg") && ($(".od-duo-msg").textContent = msg);
     $(".od-dog-hint").hidden = s.id !== "TwinLink";
@@ -874,7 +881,7 @@ body{padding:0 16px 40px;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN"
   }
   root.addEventListener("cs-change", function (e) { takeSel(e.detail); });
   [".od-breed", ".od-kg", ".od-memo"].forEach(function (s) { $(s).addEventListener("input", update); });
-  [".od-bi", ".od-thin"].forEach(function (s) { $(s).addEventListener("change", renderAll); });
+  [".od-bi", ".od-thin", ".od-kise"].forEach(function (s) { $(s).addEventListener("change", renderAll); });
   $(".od-bi-color").addEventListener("change", update);
   $(".od-send").addEventListener("click", function () {
     var done = $(".od-done");
